@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ArrowUpCircle, Send, UserCircle, Sparkles, RotateCcw } from "lucide-react";
+import { ArrowUpCircle, Send, UserCircle, Sparkles, RotateCcw, X, Lock, Unlock } from "lucide-react";
 import { collection, getDocs, onSnapshot, addDoc, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
 import { questionsData } from "./data/questions";
@@ -10,10 +10,17 @@ function App() {
   const [authorName, setAuthorName] = useState("");
   const [showInputError, setShowInputError] = useState(false);
   const [recentlyVoted, setRecentlyVoted] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [votedQuestions, setVotedQuestions] = useState(() => {
     const saved = localStorage.getItem('votedQuestions');
     return saved ? JSON.parse(saved) : {};
   });
+
+  // Check for admin mode
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setIsAdmin(params.get('mode') === 'admin');
+  }, []);
 
   // Save voted questions to localStorage
   useEffect(() => {
@@ -120,6 +127,19 @@ function App() {
     }
   };
 
+  const handleDismissQuestion = async (questionId) => {
+    if (!isAdmin) return;
+    
+    if (window.confirm("Are you sure you want to delete this question?")) {
+      try {
+        await deleteDoc(doc(db, "questions", questionId));
+      } catch (error) {
+        console.error("Error deleting question:", error);
+        alert("Failed to delete question. Please try again.");
+      }
+    }
+  };
+
   const createConfetti = () => {
     const colors = ['#FF69B4', '#7B68EE', '#87CEEB', '#FFD700'];
     const confettiCount = 100;
@@ -169,13 +189,21 @@ function App() {
                 <span className="w-1.5 h-1.5 bg-indigo-200 rounded-full"></span>
                 <span>{questions.length} questions</span>
               </div>
-              <button
-                onClick={resetQuestions}
-                className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center gap-2 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2"
-              >
-                <RotateCcw size={16} />
-                <span>Reset</span>
-              </button>
+              {isAdmin && (
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={resetQuestions}
+                    className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center gap-2 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2"
+                  >
+                    <RotateCcw size={16} />
+                    <span>Reset</span>
+                  </button>
+                  <div className="text-indigo-200 flex items-center gap-1">
+                    <Lock size={14} />
+                    <span className="text-sm">Admin Mode</span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -190,7 +218,7 @@ function App() {
           {sortedQuestions.map((question) => (
             <div
               key={question.id}
-              className="bg-white rounded-xl shadow-md p-4 transition-all duration-300 hover:shadow-xl hover:scale-102 group"
+              className="bg-white rounded-xl shadow-md p-4 transition-all duration-300 hover:shadow-xl hover:scale-102 group relative"
             >
               <div className="flex items-start gap-4">
                 <button
@@ -215,6 +243,15 @@ function App() {
                     <span className="text-sm">{question.author}</span>
                   </div>
                 </div>
+                {isAdmin && (
+                  <button
+                    onClick={() => handleDismissQuestion(question.id)}
+                    className="absolute top-2 right-2 text-gray-400 hover:text-red-500 transition-colors duration-200"
+                    title="Dismiss question"
+                  >
+                    <X size={20} />
+                  </button>
+                )}
               </div>
             </div>
           ))}
