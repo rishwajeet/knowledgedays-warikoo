@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ArrowUpCircle, Send, UserCircle, Sparkles, RotateCcw, X, Lock, Unlock } from "lucide-react";
+import { ArrowUpCircle, Send, UserCircle, Sparkles, RotateCcw, X, Lock } from "lucide-react";
 import { collection, getDocs, onSnapshot, addDoc, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
 import { questionsData } from "./data/questions";
@@ -171,9 +171,9 @@ function App() {
   const totalVotes = questions.reduce((sum, q) => sum + (q.votes || 0), 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 relative">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-indigo-950 dark:via-purple-950 dark:to-pink-950 relative">
       {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-800 dark:to-purple-900 shadow-lg relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,...')] opacity-50"></div>
         <div className="max-w-4xl mx-auto px-4 py-6 relative">
           <div className="flex items-center justify-between flex-wrap md:flex-nowrap gap-4">
@@ -193,7 +193,7 @@ function App() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={resetQuestions}
-                    className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center gap-2 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2"
+                    className="bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-700 dark:hover:bg-indigo-600 text-white px-4 py-2 rounded-lg transition-all duration-300 flex items-center gap-2 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2"
                   >
                     <RotateCcw size={16} />
                     <span>Reset</span>
@@ -218,7 +218,7 @@ function App() {
           {sortedQuestions.map((question) => (
             <div
               key={question.id}
-              className="bg-white rounded-xl shadow-md p-4 transition-all duration-300 hover:shadow-xl hover:scale-102 group relative"
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 transition-all duration-300 hover:shadow-xl dark:shadow-purple-900/20 hover:scale-102 group relative"
             >
               <div className="flex items-start gap-4">
                 <button
@@ -226,8 +226,8 @@ function App() {
                   disabled={votedQuestions[question.id]}
                   className={`flex flex-col items-center transition-all duration-300 ${
                     votedQuestions[question.id]
-                      ? "text-purple-300 cursor-not-allowed"
-                      : "text-purple-600 hover:text-purple-700 hover:scale-110"
+                      ? "text-purple-300 dark:text-purple-500 cursor-not-allowed"
+                      : "text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:scale-110"
                   } ${recentlyVoted === question.id ? "vote-pop" : ""}`}
                 >
                   <ArrowUpCircle
@@ -237,16 +237,18 @@ function App() {
                   <span className="font-bold text-lg">{question.votes || 0}</span>
                 </button>
                 <div className="flex-1">
-                  <p className="text-gray-800 text-lg mb-2 font-medium">{question.text}</p>
-                  <div className="flex items-center gap-2 text-gray-500">
-                    <UserCircle size={16} className="text-purple-400" />
+                  <p className="text-gray-800 dark:text-gray-100 text-lg mb-2 font-medium">
+                    {question.text}
+                  </p>
+                  <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                    <UserCircle size={16} className="text-purple-400 dark:text-purple-300" />
                     <span className="text-sm">{question.author}</span>
                   </div>
                 </div>
                 {isAdmin && (
                   <button
                     onClick={() => handleDismissQuestion(question.id)}
-                    className="absolute top-2 right-2 text-gray-400 hover:text-red-500 transition-colors duration-200"
+                    className="absolute top-2 right-2 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200"
                     title="Dismiss question"
                   >
                     <X size={20} />
@@ -259,7 +261,7 @@ function App() {
       </div>
 
       {/* Question Input Form */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-purple-100">
+      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 shadow-lg border-t border-purple-100 dark:border-purple-900">
         <form onSubmit={handleSubmit} className="max-w-2xl mx-auto p-4">
           <div className="space-y-3">
             <div className="flex gap-2">
@@ -269,17 +271,20 @@ function App() {
                 value={newQuestion}
                 onChange={(e) => setNewQuestion(e.target.value)}
                 placeholder="Ask your question..."
-                className={`flex-1 p-3 border rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all duration-300 ${
-                  showInputError ? "border-red-300 animate-shake" : "border-purple-200"
-                }`}
+                className={`flex-1 p-3 border rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all duration-300 
+                  ${showInputError 
+                    ? "border-red-300 animate-shake" 
+                    : "border-purple-200 dark:border-purple-700"
+                  }
+                  dark:bg-gray-700 dark:text-white dark:placeholder-gray-400`}
               />
               <button
                 type="submit"
-                className="bg-purple-600 text-white px-6 py-3 rounded-xl flex items-center gap-2 hover:bg-purple-700 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 relative overflow-hidden group"
+                className="bg-purple-600 dark:bg-purple-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 hover:bg-purple-700 dark:hover:bg-purple-600 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
               >
                 <Send size={20} className="relative z-10 group-hover:rotate-12 transition-transform" />
                 <span className="relative z-10">Ask</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-700 dark:to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </button>
             </div>
             <input
@@ -287,7 +292,7 @@ function App() {
               value={authorName}
               onChange={(e) => setAuthorName(e.target.value)}
               placeholder="Your name (optional)"
-              className="w-full p-3 border border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all duration-300"
+              className="w-full p-3 border border-purple-200 dark:border-purple-700 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all duration-300 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
             />
           </div>
         </form>
