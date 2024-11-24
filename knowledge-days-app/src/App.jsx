@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ArrowUpCircle, Send, UserCircle, Sparkles, RotateCcw } from "lucide-react";
 import { collection, getDocs, onSnapshot, addDoc, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
-import questionsData from "./questions.json";
+import { questionsData } from "./data/questions";
 
 function App() {
   const [questions, setQuestions] = useState([]);
