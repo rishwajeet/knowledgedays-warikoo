@@ -3,19 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Knowledge Days Questions</title>
     <meta name="theme-color" content="#6366f1">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
       input, textarea, select {
-        font-size: 16px !important; /* Prevents iOS zoom */
+        font-size: 16px !important;
       }
       @supports (-webkit-touch-callout: none) {
         /* CSS specific to iOS devices */
         input, textarea, select {
           font-size: 16px !important;
         }
+      }
+      /* Add padding for iOS safe areas */
+      @supports (padding: max(0px)) {
+        .fixed {
+          padding-bottom: max(1rem, env(safe-area-inset-bottom));
+        }
+      }
+      body {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
       }
     </style>
   </head>
