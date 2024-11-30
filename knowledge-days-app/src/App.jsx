@@ -527,6 +527,28 @@ function App() {
         >
           <div className="max-w-3xl mx-auto p-4">
             <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+              {/* Fun Messages */}
+              <AnimatePresence mode="wait">
+                {newQuestion.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="text-xs sm:text-sm px-1"
+                  >
+                    {newQuestion.length < 10 ? (
+                      <span className="text-blue-500">Keep going! What's on your mind? 🤔</span>
+                    ) : newQuestion.length < 50 ? (
+                      <span className="text-indigo-500">That's interesting! Care to elaborate? ✨</span>
+                    ) : newQuestion.length < 100 ? (
+                      <span className="text-purple-500">Now we're talking! Great question forming... 🌟</span>
+                    ) : (
+                      <span className="text-pink-500">Wow, that's a thoughtful question! 🎯</span>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
               <div className="relative flex items-center gap-2">
                 <input
                   type="text"
@@ -561,18 +583,30 @@ function App() {
                 </motion.button>
               </div>
 
-              <input
-                type="text"
-                value={author}
-                onChange={(e) => setAuthor(e.target.value)}
-                placeholder="Your name (optional)"
-                className="w-full px-4 py-2 text-sm rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:focus:ring-purple-400 transition-shadow"
-                style={{
-                  fontSize: '16px',
-                  WebkitAppearance: 'none',
-                  appearance: 'none'
-                }}
-              />
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={author}
+                  onChange={(e) => setAuthor(e.target.value)}
+                  placeholder="Your name (optional)"
+                  className="w-full px-4 py-2 text-sm rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:focus:ring-purple-400 transition-shadow"
+                  style={{
+                    fontSize: '16px',
+                    WebkitAppearance: 'none',
+                    appearance: 'none'
+                  }}
+                />
+              </div>
+
+              {!sessionActive && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-xs sm:text-sm text-orange-500 dark:text-orange-400 px-1"
+                >
+                  Session is paused. Please wait for the host to resume.
+                </motion.div>
+              )}
             </form>
           </div>
         </motion.div>
