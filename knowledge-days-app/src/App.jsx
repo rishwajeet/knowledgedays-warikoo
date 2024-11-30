@@ -522,60 +522,50 @@ function App() {
         <motion.div
           initial={{ y: 100 }}
           animate={{ y: 0 }}
-          className="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-t border-purple-100 dark:border-purple-800 shadow-lg"
+          className="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg border-t border-gray-200 dark:border-gray-700"
         >
-          <div className="max-w-3xl mx-auto p-3 sm:p-4">
-            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <motion.div className="flex-1 relative">
-                  <motion.textarea
-                    whileFocus={{ scale: 1.02 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                    value={newQuestion}
-                    onChange={(e) => setNewQuestion(e.target.value)}
-                    placeholder="What's on your mind? Ask anything!"
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base rounded-xl border-2 border-purple-100 dark:border-purple-900 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 transition-all duration-300 min-h-[60px] sm:min-h-[80px] bg-white/50 dark:bg-gray-900/50 text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-600 backdrop-blur-sm"
-                    required
-                  />
-                  <motion.div
-                    className="absolute bottom-2 right-3 text-xs sm:text-sm text-gray-400"
-                    animate={{
-                      scale: newQuestion.length > 0 ? 1 : 0.8,
-                      opacity: newQuestion.length > 0 ? 1 : 0.5,
-                    }}
-                  >
-                    {newQuestion.length}/280
-                  </motion.div>
-                </motion.div>
-
-                <div className="flex sm:flex-col gap-2 items-stretch">
-                  <motion.input
-                    whileFocus={{ scale: 1.02 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                    type="text"
-                    value={author}
-                    onChange={(e) => setAuthor(e.target.value)}
-                    placeholder="Your name (optional)"
-                    className="flex-1 sm:flex-none px-3 sm:px-4 py-2 text-sm sm:text-base rounded-xl border-2 border-purple-100 dark:border-purple-900 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 transition-all duration-300 bg-white/50 dark:bg-gray-900/50 text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-600 backdrop-blur-sm"
-                  />
-                  
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    type="submit"
-                    disabled={!sessionActive}
-                    className={`px-4 sm:px-6 py-2 rounded-xl text-sm sm:text-base font-medium flex items-center justify-center gap-2 ${
-                      sessionActive
-                        ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg shadow-purple-500/30'
-                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    } transition-all duration-300`}
-                  >
-                    <Send className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span className="hidden sm:inline">Share</span>
-                  </motion.button>
-                </div>
-              </div>
-
+          <div className="max-w-3xl mx-auto p-4">
+            <form onSubmit={handleSubmit} className="relative">
+              <input
+                type="text"
+                value={newQuestion}
+                onChange={(e) => {
+                  setNewQuestion(e.target.value);
+                  setShowInputError(false);
+                }}
+                placeholder="Ask a question..."
+                className="w-full px-4 py-3 pr-24 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 shadow-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:focus:ring-purple-400 transition-shadow text-base md:text-base"
+                style={{
+                  fontSize: '16px',
+                  lineHeight: '1.5',
+                  WebkitAppearance: 'none',
+                  appearance: 'none'
+                }}
+                maxLength={280}
+              />
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                type="submit"
+                disabled={!sessionActive}
+                className={`px-4 py-2 rounded-xl text-sm font-medium flex items-center justify-center gap-2 ${
+                  sessionActive
+                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg shadow-purple-500/30'
+                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                } transition-all duration-300`}
+              >
+                <Send className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="hidden sm:inline">Share</span>
+              </motion.button>
+              <motion.input
+                whileFocus={{ scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                type="text"
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
+                placeholder="Your name (optional)"
+                className="flex-1 sm:flex-none px-3 sm:px-4 py-2 text-sm sm:text-base rounded-xl border-2 border-purple-100 dark:border-purple-900 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 transition-all duration-300 bg-white/50 dark:bg-gray-900/50 text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-600 backdrop-blur-sm"
+              />
               {/* Fun Messages */}
               <AnimatePresence mode="wait">
                 {newQuestion.length > 0 && (
